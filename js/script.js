@@ -4,8 +4,8 @@
 //1.  Create and name global variables (select elements) (1)
 //2.  Fetch User Data (2-4)
 //3.  Fetch Repo Data (5-7)
-//4.  Display Repo Info (8-)
-//5.  (14-15)
+//4.  Display Repo Info (8-13)
+//5.  Create a Dynamic Search (14-)
 
 //Steps:
 //1.  Create global variables
@@ -21,6 +21,10 @@
 //11. Create an array of languages
 //12. Createa function to display specific repo info
 //13. Call your function and view your work
+//14. Create global variables to select a button and input
+//15. Add a click event to the back button
+//16. Display the input element
+//17. Add an input event to the search box
 
 */
 
@@ -28,12 +32,15 @@
 
 //1. CREATE and NAME GLOBAL VARIABLES
 //5. Select the repos list by creating a global variable to select the unordered list
+//14. Create global variables to select a button and input
 
 //div with class of "overview" - where profile information will appear
 const repoList = document.querySelector(".repo-list");
 const overview = document.querySelector(".overview");
 const allReposContainer = document.querySelector(".repos");
 const repoData = document.querySelector(".repo-data");
+const viewReposButton = document.querySelector(".view-repos");
+const filterInput = document.querySelector(".filter-repos");
 //GitHub username
 let username = "KarenHsky";
 
@@ -87,6 +94,8 @@ const displayRepos = function (repos) {
       repoItem.innerHTML = `<h3>${repo.name}</h3>`;
       repoList.append(repoItem);
   }
+  //16. DISPLAY THE INPUT ELEMENT
+  filterInput.classList.remove("hide");
 };
 
 //9.  ADD CLICK EVENT
@@ -128,5 +137,31 @@ displayRepoInfo(repoInfo, languages);
       repoData.append(div);
       repoData.classList.remove("hide");
       allReposContainer.classList.add("hide");
+      viewReposButton.classList.remove("hide");
  };
+
+ //15. ADD CLICK EVENT TO BACK BUTTON
+ viewReposButton.addEventListener("click", function() {
+   allReposContainer.classList.remove("hide");
+   repoData.classList.add("hide");
+   viewReposButton.classList.add("hide");
+ });
+
+
+ //ADD AN INPUT EVENT TO THE SEARCH BOX to create a dynamic search
+ filterInput.addEventListener("input", function(e) {
+  const searchText = e.target.value; 
+  const repos = document.querySelectorAll(".repo");
+  const searchLowerText = searchText.toLowerCase();
+
+  for (const repo of repos) {
+    const repoLowerText = repo.innerText.toLowerCase();
+    if (repoLowerText.includes(searchLowerText)) {
+      repo.classList.remove("hide");
+    } else {
+      repo.classList.add("hide");
+    }
+  }
+});
+
 
