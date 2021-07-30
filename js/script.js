@@ -3,9 +3,9 @@
 //Big Picture Steps
 //1.  Create and name global variables (select elements) (1)
 //2.  Fetch User Data (2-4)
-//3.  Fetch Repo Data (5-)
-//4.  Fetch words and remaining guesses (11-13)
-//5.  Play again (clear and reset) (14-15)
+//3.  Fetch Repo Data (5-7)
+//4.  Display Repo Info (8-)
+//5.  (14-15)
 
 //Steps:
 //1.  Create global variables
@@ -15,6 +15,12 @@
 //5.  Select the Repos List
 //6.  Fetch your repos
 //7.  Display info about your repos
+//8.  Declare 2 new global variables
+//9.  Add a click event
+//10. Create a function to get specific repo info
+//11. Create an array of languages
+//12. Createa function to display specific repo info
+//13. Call your function and view your work
 
 */
 
@@ -26,6 +32,8 @@
 //div with class of "overview" - where profile information will appear
 const repoList = document.querySelector(".repo-list");
 const overview = document.querySelector(".overview");
+const allReposContainer = document.querySelector(".repos");
+const repoData = document.querySelector(".repo-data");
 //GitHub username
 let username = "KarenHsky";
 
@@ -68,7 +76,7 @@ const getRepoData = async function() {
     console.log(repoData);
     displayRepos(repoData);
   };
-  
+
 getRepoData();
 
 //7.  DISPLAY INFO ABOUT YOUR REPOS (use a for...of loop to iterate through the block of code) QUESTUIB:  why use "repos" when never defined?
@@ -80,4 +88,45 @@ const displayRepos = function (repos) {
       repoList.append(repoItem);
   }
 };
+
+//9.  ADD CLICK EVENT
+repoList.addEventListener("click", function(e) {
+  if (e.target.matches("h3")) {
+    const repoName = e.target.innerText;
+    getRepoInfo(repoName);
+  }
+});
+
+//10.  CREATE A FUNCTION TO GET SPECIFIC REPO INFO
+const getRepoInfo = async function (repoName) {
+  const res = await fetch (`https://api.github.com/repos/${username}/${repoName}`);
+  const repoInfo = await res.json();
+  console.log(repoInfo);
+  const fetchLanguages = await fetch (repoInfo.languages_url);
+  const languageData = await fetchLanguages.json();
+ //console.log(languageData);
+
+const languages = []
+  for (const language in languageData) {
+    languages.push(language);
+  }
+displayRepoInfo(repoInfo, languages);
+
+};
+
+ //.  CREATE A FUNCTION TO DISPLAY SPECIFIC REPO INFO
+ const displayRepoInfo = function (repoInfo, languages) {
+   repoData.innerHTML = "";
+   const div = document.createElement("div");
+   div.innerHTML = `
+   <h3>Name: ${repoInfo.name}</h3>
+    <p>Description: ${repoInfo.description}</p>
+    <p>Default Branch: ${repoInfo.default_brancj}</p>
+    <p>Languages: ${languages.join(", ")}</p>
+    <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>
+   `;
+      repoData.append(div);
+      repoData.classList.remove("hide");
+      allReposContainer.classList.add("hide");
+ };
 
